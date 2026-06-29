@@ -45,7 +45,7 @@ const cases = [
 
 export default function CaseStudies() {
   return (
-    <section id="case-studies" className="relative py-24 bg-[#020b18] overflow-hidden">
+    <section id="case-studies" className="relative py-14 bg-[#020b18] overflow-hidden">
       <div className="absolute inset-0 dot-grid opacity-30" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[1px] bg-gradient-to-r from-transparent via-[rgba(0,229,255,0.2)] to-transparent" />
 

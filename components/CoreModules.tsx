@@ -48,8 +48,43 @@ export default function CoreModules() {
 
   const activeModule = modulesData.find(m => m.id === activeTab) || modulesData[0];
   const [isDiscoveryModalOpen, setIsDiscoveryModalOpen] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", company: "", focusVerticals: "" });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
+
+  const handleDiscoverySubmit = async () => {
+    if (!formData.name || !formData.email || !formData.company) {
+      setMessage({ type: "error", text: "Name, email, and company are required." });
+      return;
+    }
+    setLoading(true);
+    setMessage({ type: "", text: "" });
+    try {
+      const res = await fetch("https://bele-email.omnisuiteai.com/api/discovery", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessage({ type: "success", text: data.message || "Request submitted successfully!" });
+        setFormData({ name: "", email: "", company: "", focusVerticals: "" });
+        setTimeout(() => {
+          setIsDiscoveryModalOpen(false);
+          setMessage({ type: "", text: "" });
+        }, 2000);
+      } else {
+        setMessage({ type: "error", text: data.error || "Failed to submit request." });
+      }
+    } catch (error) {
+      setMessage({ type: "error", text: "An error occurred. Please try again." });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <section id="core-modules" className="relative py-24 bg-[#020b18] overflow-hidden">
+    <section id="core-modules" className="relative py-14 bg-[#020b18] overflow-hidden">
       <div className="absolute inset-0 dot-grid opacity-25" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -133,7 +168,7 @@ export default function CoreModules() {
                   Fully compliant & integration-ready
                 </span>
                 <div className="flex items-center gap-4">
-                  <a href="#demo" className="flex items-center gap-2 text-[13px] font-semibold text-white hover:text-[#00e5ff] transition-colors">
+                  <a href="/demo" className="flex items-center gap-2 text-[13px] font-semibold text-white hover:text-[#00e5ff] transition-colors">
                     Try Live Demo <Sparkles className="w-3.5 h-3.5 text-[#00e5ff]" />
                   </a>
                   <button onClick={() => setIsDiscoveryModalOpen(true)} className="flex items-center gap-2 bg-[#00e5ff] hover:bg-[#00ccdd] text-[#020b18] text-[13px] font-bold px-5 py-2.5 rounded-md transition-colors">
@@ -179,28 +214,33 @@ export default function CoreModules() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-[10px] font-bold tracking-widest text-[rgba(255,255,255,0.5)] uppercase mb-2">Your Name</label>
-                  <input type="text" placeholder="John Doe" className="w-full bg-[#050f24] border border-[rgba(0,229,255,0.3)] rounded-md px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00e5ff] transition-colors" />
+                  <input type="text" placeholder="John Doe" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-[#050f24] border border-[rgba(0,229,255,0.3)] rounded-md px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00e5ff] transition-colors" />
                 </div>
                 <div>
                   <label className="block text-[10px] font-bold tracking-widest text-[rgba(255,255,255,0.5)] uppercase mb-2">Work Email</label>
-                  <input type="email" placeholder="john@company.com" className="w-full bg-[#050f24] border border-[rgba(255,255,255,0.1)] rounded-md px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00e5ff] transition-colors" />
+                  <input type="email" placeholder="john@company.com" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-[#050f24] border border-[rgba(255,255,255,0.1)] rounded-md px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00e5ff] transition-colors" />
                 </div>
                 <div>
                   <label className="block text-[10px] font-bold tracking-widest text-[rgba(255,255,255,0.5)] uppercase mb-2">Company / Agency Name</label>
-                  <input type="text" placeholder="Acme Digital" className="w-full bg-[#050f24] border border-[rgba(255,255,255,0.1)] rounded-md px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00e5ff] transition-colors" />
+                  <input type="text" placeholder="Acme Digital" value={formData.company} onChange={(e) => setFormData({ ...formData, company: e.target.value })} className="w-full bg-[#050f24] border border-[rgba(255,255,255,0.1)] rounded-md px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00e5ff] transition-colors" />
                 </div>
                 <div>
                   <label className="block text-[10px] font-bold tracking-widest text-[rgba(255,255,255,0.5)] uppercase mb-2">Client Pipeline / Focus Verticals</label>
-                  <input type="text" placeholder="e.g. Telecommunications, Hospitality..." className="w-full bg-[#050f24] border border-[rgba(255,255,255,0.1)] rounded-md px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00e5ff] transition-colors" />
+                  <input type="text" placeholder="e.g. Telecommunications, Hospitality..." value={formData.focusVerticals} onChange={(e) => setFormData({ ...formData, focusVerticals: e.target.value })} className="w-full bg-[#050f24] border border-[rgba(255,255,255,0.1)] rounded-md px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00e5ff] transition-colors" />
                 </div>
               </div>
+              {message.text && (
+                <div className={`mt-4 text-[13px] font-medium ${message.type === 'error' ? 'text-red-400' : 'text-green-400'}`}>
+                  {message.text}
+                </div>
+              )}
             </div>
             <div className="flex items-center justify-end gap-4 p-5 border-t border-[rgba(255,255,255,0.05)] bg-[#041124] rounded-b-xl">
               <button onClick={() => setIsDiscoveryModalOpen(false)} className="text-[13px] font-semibold text-[rgba(255,255,255,0.6)] hover:text-white transition-colors">
                 Cancel
               </button>
-              <button onClick={() => setIsDiscoveryModalOpen(false)} className="bg-[#00e5ff] hover:bg-[#00ccdd] text-[#020b18] text-[14px] font-bold px-6 py-2.5 rounded-md transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)]">
-                Schedule Discovery Call
+              <button onClick={handleDiscoverySubmit} disabled={loading} className="bg-[#00e5ff] hover:bg-[#00ccdd] disabled:opacity-50 text-[#020b18] text-[14px] font-bold px-6 py-2.5 rounded-md transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)]">
+                {loading ? "Submitting..." : "Schedule Discovery Call"}
               </button>
             </div>
           </div>

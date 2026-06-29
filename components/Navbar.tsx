@@ -16,6 +16,41 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
+  
+  const [formData, setFormData] = useState({ name: "", email: "", company: "", estimatedClientCount: "" });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
+
+  const handleApplySubmit = async () => {
+    if (!formData.name || !formData.email || !formData.company) {
+      setMessage({ type: "error", text: "Name, email, and company are required." });
+      return;
+    }
+    setLoading(true);
+    setMessage({ type: "", text: "" });
+    try {
+      const res = await fetch("https://bele-email.omnisuiteai.com/api/partnership", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessage({ type: "success", text: data.message || "Application submitted successfully!" });
+        setFormData({ name: "", email: "", company: "", estimatedClientCount: "" });
+        setTimeout(() => {
+          setIsApplyModalOpen(false);
+          setMessage({ type: "", text: "" });
+        }, 2000);
+      } else {
+        setMessage({ type: "error", text: data.error || "Failed to submit application." });
+      }
+    } catch (error) {
+      setMessage({ type: "error", text: "An error occurred. Please try again." });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -65,7 +100,7 @@ export default function Navbar() {
             {/* Right side */}
             <div className="hidden lg:flex items-center gap-3">
               <a
-                href="#demos"
+                href="/demo"
                 className="flex items-center gap-1.5 text-[13px] font-semibold text-white hover:text-[#00e5ff] no-underline hover:no-underline transition-colors duration-200"
               >
                 Interactive Demos
@@ -109,7 +144,7 @@ export default function Navbar() {
             ))}
             <div className="mt-4 flex flex-col gap-3">
               <a
-                href="#demos"
+                href="/demo"
                 className="flex items-center gap-2 text-[13px] font-semibold text-white no-underline hover:no-underline"
               >
                 Interactive Demos{" "}
@@ -163,6 +198,8 @@ export default function Navbar() {
                       <input
                         type="text"
                         placeholder="John Doe"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className="w-full bg-[#050f24] border border-[rgba(0,229,255,0.3)] rounded-md px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00e5ff] transition-colors"
                       />
                     </div>
@@ -173,6 +210,8 @@ export default function Navbar() {
                       <input
                         type="email"
                         placeholder="john@company.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="w-full bg-[#050f24] border border-[rgba(255,255,255,0.1)] rounded-md px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00e5ff] transition-colors"
                       />
                     </div>
@@ -183,6 +222,8 @@ export default function Navbar() {
                       <input
                         type="text"
                         placeholder="Acme Digital"
+                        value={formData.company}
+                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                         className="w-full bg-[#050f24] border border-[rgba(255,255,255,0.1)] rounded-md px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00e5ff] transition-colors"
                       />
                     </div>
@@ -193,10 +234,17 @@ export default function Navbar() {
                       <input
                         type="text"
                         placeholder="e.g. 10 clients ready for AI automation"
+                        value={formData.estimatedClientCount}
+                        onChange={(e) => setFormData({ ...formData, estimatedClientCount: e.target.value })}
                         className="w-full bg-[#050f24] border border-[rgba(255,255,255,0.1)] rounded-md px-4 py-3 text-[14px] text-white focus:outline-none focus:border-[#00e5ff] transition-colors"
                       />
                     </div>
                   </div>
+                  {message.text && (
+                    <div className={`mt-4 text-[13px] font-medium ${message.type === 'error' ? 'text-red-400' : 'text-green-400'}`}>
+                      {message.text}
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center justify-end gap-4 p-5 border-t border-[rgba(255,255,255,0.05)] bg-[#041124] rounded-b-xl">
                   <button
@@ -206,10 +254,11 @@ export default function Navbar() {
                     Cancel
                   </button>
                   <button
-                    onClick={() => setIsApplyModalOpen(false)}
-                    className="bg-[#00e5ff] hover:bg-[#00ccdd] text-[#020b18] text-[14px] font-bold px-6 py-2.5 rounded-md transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)]"
+                    onClick={handleApplySubmit}
+                    disabled={loading}
+                    className="bg-[#00e5ff] hover:bg-[#00ccdd] disabled:opacity-50 text-[#020b18] text-[14px] font-bold px-6 py-2.5 rounded-md transition-colors shadow-[0_0_15px_rgba(0,229,255,0.3)]"
                   >
-                    Submit Application
+                    {loading ? "Submitting..." : "Submit Application"}
                   </button>
                 </div>
               </div>
