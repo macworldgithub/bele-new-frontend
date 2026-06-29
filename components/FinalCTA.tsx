@@ -20,6 +20,7 @@ export default function FinalCTA() {
       setApplyMessage({ type: "error", text: "Name, email, and company are required." });
       return;
     }
+    
     setApplyLoading(true);
     setApplyMessage({ type: "", text: "" });
     try {
