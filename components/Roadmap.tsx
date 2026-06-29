@@ -1,57 +1,43 @@
 'use client';
 
-const phases = [
+import { useState } from 'react';
+import Image from 'next/image';
+
+const roadmapData = [
   {
-    phase: 'Phase 1',
-    label: 'Days 1–14',
+    id: 'w1',
+    weeks: 'WEEKS 1-2',
     title: 'Onboarding & Enablement',
-    color: '#00e5ff',
-    steps: [
-      'Complete partner certification program (8 hrs online)',
-      'Access partner portal, CRM, and demo environments',
-      '1:1 kickoff call with your dedicated success manager',
-      'Receive sales playbook, pitch decks, and objection scripts',
-    ],
+    milestone: 'Demo certified',
+    desc: 'Get equipped for success. Receive access to the partner portal, e-learning modules, sales playbooks, and interactive demos. Confidently demo all four modules with your named technical mentor.',
   },
   {
-    phase: 'Phase 2',
-    label: 'Days 15–45',
-    title: 'First Client Acquisition',
-    color: '#00e5ff',
-    steps: [
-      'Identify 20 target prospects using our outreach templates',
-      'Run co-selling discovery calls with Bele AI support',
-      'Submit first client brief for custom build scoping',
-      'First deployment live within 2–3 weeks of signed contract',
-    ],
+    id: 'w2',
+    weeks: 'WEEKS 3-6',
+    title: 'First Prospect Engagement',
+    milestone: 'Qualified pipeline',
+    desc: 'Open high-value conversations. Identify 5–10 customers fitting our Ideal Customer Profile. Leverage joint-call support, scoping templates, and custom live demos.',
   },
   {
-    phase: 'Phase 3',
-    label: 'Days 46–75',
-    title: 'Revenue Activation',
-    color: '#00e5ff',
-    steps: [
-      'Receive first revenue-share payment (paid monthly)',
-      'Onboard 2nd and 3rd clients using proven playbook',
-      'Attend monthly partner roundtable for new strategies',
-      'Unlock Silver Partner tier benefits',
-    ],
+    id: 'w3',
+    weeks: 'WEEKS 7-10',
+    title: 'Scope & Quote',
+    milestone: 'First signed deal',
+    desc: 'Build tailored customer-ready proposals using our rapid quoting tools. The Bele solutions team joins technical calls to ensure deep architectural fit.',
   },
   {
-    phase: 'Phase 4',
-    label: 'Days 76–90',
-    title: 'Scale & Optimize',
-    color: '#00e5ff',
-    steps: [
-      'Review client performance dashboards with success manager',
-      'Identify upsell and cross-sell opportunities in active accounts',
-      'Begin Gold Partner certification track',
-      'Project monthly recurring revenue of $15K–$30K+',
-    ],
-  },
+    id: 'w4',
+    weeks: 'WEEKS 11-13',
+    title: 'Activation & Scale',
+    milestone: 'Compounding MRR',
+    desc: 'Bele runs the entire technical build, testing, and deployment. You stay updated via the live delivery tracker. First recurring MRR bills and scales.',
+  }
 ];
 
 export default function Roadmap() {
+  const [activeTab, setActiveTab] = useState(roadmapData[0].id);
+  const activeContent = roadmapData.find(d => d.id === activeTab) || roadmapData[0];
+
   return (
     <section id="roadmap" className="relative py-24 bg-[#020b18] overflow-hidden">
       <div className="absolute inset-0 dot-grid opacity-30" />
@@ -60,65 +46,79 @@ export default function Roadmap() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <span className="inline-flex items-center border border-[rgba(0,229,255,0.25)] text-[#00e5ff] text-[11px] font-semibold tracking-widest uppercase px-4 py-1.5 rounded-full bg-[rgba(0,229,255,0.05)] mb-5">
-            90-Day Roadmap
+            THE PATH TO REVENUE
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
-            From Zero to{' '}
-            <span className="text-[#00e5ff]">First $30K MRR</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-white leading-tight">
+            Your First 90 Days
           </h2>
-          <p className="mt-4 text-[15px] text-[rgba(255,255,255,0.55)] max-w-2xl mx-auto">
-            A proven, step-by-step framework to get certified, land your first clients, and build a scalable recurring revenue business in 90 days.
+          <p className="mt-6 text-[15px] text-[rgba(255,255,255,0.55)] max-w-2xl mx-auto leading-relaxed">
+            Our onboarding program is designed to get you producing recurring revenue within the first quarter, backed by direct support from our founders.
           </p>
         </div>
 
-        {/* Timeline */}
-        <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-[rgba(0,229,255,0.4)] via-[rgba(0,229,255,0.2)] to-transparent" />
-
-          <div className="flex flex-col gap-10">
-            {phases.map((p, i) => (
-              <div
-                key={p.phase}
-                className={`relative flex items-start gap-8 ${
-                  i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                }`}
+        {/* Tabs Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {roadmapData.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`text-left p-5 rounded-xl border transition-all duration-300 ${isActive
+                  ? 'bg-[#041124] border-[rgba(0,229,255,0.3)] shadow-[0_0_15px_rgba(0,229,255,0.1)]'
+                  : 'bg-[#041124] border-[rgba(255,255,255,0.05)] hover:border-[rgba(255,255,255,0.15)]'
+                  }`}
               >
-                {/* Mobile dot */}
-                <div className="absolute left-8 w-0 md:hidden">
-                  <div className="w-4 h-4 rounded-full timeline-dot -translate-x-2" />
+                <div className={`text-[11px] font-bold tracking-widest uppercase mb-1.5 ${isActive ? 'text-[#00e5ff]' : 'text-[rgba(255,255,255,0.4)]'}`}>
+                  {tab.weeks}
                 </div>
-
-                {/* Desktop: half-width content */}
-                <div className={`w-full md:w-5/12 pl-16 md:pl-0 ${i % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                  <div className="gradient-border rounded-xl p-6 module-card">
-                    <div className="flex items-center gap-3 mb-4 flex-wrap">
-                      <span className="step-num text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-full">
-                        {p.phase}
-                      </span>
-                      <span className="text-[11px] text-[rgba(255,255,255,0.35)]">{p.label}</span>
-                    </div>
-                    <h3 className="text-[17px] font-bold text-white mb-4">{p.title}</h3>
-                    <ul className="flex flex-col gap-2.5">
-                      {p.steps.map((s) => (
-                        <li key={s} className="flex items-start gap-2 text-[12px] text-[rgba(255,255,255,0.55)] leading-relaxed">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#00e5ff] flex-shrink-0 mt-1.5 opacity-70" />
-                          {s}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                <div className="text-[15px] font-bold text-white mb-3 leading-tight">
+                  {tab.title}
                 </div>
-
-                {/* Desktop center dot */}
-                <div className="hidden md:flex w-2/12 justify-center items-center">
-                  <div className="w-5 h-5 rounded-full timeline-dot" />
+                <div className="inline-flex text-[11px] font-semibold text-[rgba(255,255,255,0.5)] bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.05)] px-2.5 py-1 rounded-md">
+                  {tab.milestone}
                 </div>
+              </button>
+            );
+          })}
+        </div>
 
-                {/* Spacer for alternating layout */}
-                <div className="hidden md:block w-5/12" />
+        {/* Active Content Panel */}
+        <div className="bg-[#050f24] border border-[rgba(255,255,255,0.08)] rounded-2xl p-8 lg:p-10 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-[rgba(0,229,255,0.03)] rounded-full blur-3xl pointer-events-none" />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+            {/* Left side text */}
+            <div>
+              <div className="text-[12px] font-bold tracking-widest uppercase text-[#00e5ff] mb-2">
+                {activeContent.weeks}
               </div>
-            ))}
+              <h3 className="text-[28px] font-extrabold text-white mb-6">
+                {activeContent.title}
+              </h3>
+              <p className="text-[15px] text-[rgba(255,255,255,0.6)] leading-relaxed mb-8">
+                {activeContent.desc}
+              </p>
+              <div className="flex items-center gap-3">
+                <span className="text-[13px] font-bold text-[#00e5ff]">Target Milestone:</span>
+                <span className="inline-flex text-[12px] font-semibold text-white bg-[rgba(0,229,255,0.1)] border border-[rgba(0,229,255,0.2)] px-3 py-1.5 rounded-md">
+                  {activeContent.milestone}
+                </span>
+              </div>
+            </div>
+
+            {/* Right side Image */}
+            <div className="relative flex justify-center">
+              <div className="relative w-full rounded-xl overflow-hidden border border-[rgba(255,255,255,0.08)] bg-[#041124] shadow-lg">
+                <Image
+                  src="/images/patner.png"
+                  alt="90 Day Partner Journey"
+                  width={600}
+                  height={400}
+                  className="w-full h-auto object-contain"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

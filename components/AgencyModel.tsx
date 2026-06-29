@@ -1,130 +1,131 @@
 'use client';
 
-import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { CheckCircle2 } from 'lucide-react';
+import Image from 'next/image';
 
-const partnerBenefits = [
-  'Up to 40% of all monthly recurring revenue — paid automatically',
-  'Zero engineering or support responsibility on your side',
-  'White-label option — deploy under your own brand',
-  'Dedicated partner success manager from day one',
-  'Co-selling support on enterprise and mid-market deals',
-  'Quarterly performance bonuses at 5+ active clients',
-  'Access to Bele AI partner portal with live revenue dashboard',
-  'Priority access to new modules before general release',
-];
-
-const tiers = [
-  {
-    name: 'Affiliate',
-    rev: '15%',
-    req: 'Refer & introduce clients',
-    clients: '1–2 active clients',
-    support: 'Standard partner support',
-    highlight: false,
+const responsibilities = {
+  partner: {
+    title: 'Focus on Growth & Strategy',
+    desc: 'As the partner, you maintain the commercial relationship. You identify high-value opportunities, scope requirements, and secure the contract using our comprehensive sales playbooks and tools.',
+    items: [
+      {
+        title: 'Lead Generation:',
+        desc: 'Source mid-market and enterprise opportunities with our Ideal Customer Profile.'
+      },
+      {
+        title: 'Opportunity Scoping:',
+        desc: 'Identify business operational friction points and map modules to customer needs.'
+      },
+      {
+        title: 'Proposal & Contract:',
+        desc: 'Quote licenses and integrations using our pricing matrices and sign agreements.'
+      }
+    ]
   },
-  {
-    name: 'Silver Partner',
-    rev: '25%',
-    req: 'Own full sales cycle',
-    clients: '3–7 active clients',
-    support: 'Dedicated success manager',
-    highlight: false,
-  },
-  {
-    name: 'Gold Partner',
-    rev: '35%',
-    req: 'Certified solution advisor',
-    clients: '8–14 active clients',
-    support: 'Priority support + co-selling',
-    highlight: true,
-  },
-  {
-    name: 'Platinum Partner',
-    rev: '40%',
-    req: 'Strategic account growth',
-    clients: '15+ active clients',
-    support: 'Dedicated engineering pod',
-    highlight: false,
-  },
-];
+  bele: {
+    title: 'Enterprise Engineering Delivery',
+    desc: 'Bele AI`s engineering team takes over the entire technical lifecycle. We handle the complex integrations, build robust automation workflows, manage secure testing, and maintain the ongoing service infrastructure.',
+    items: [
+      {
+        title: 'Custom Build:',
+        desc: 'We configure and deploy selected modules and build custom read/write API integrations.'
+      },
+      {
+        title: 'Testing & Activation:',
+        desc: 'We manage end-to-end security audits, sandboxed testing, and go-live operations.'
+      },
+      {
+        title: 'Billing & Ongoing Support:',
+        desc: 'We bill licenses, manage usage caps, and provide 24/7 level-2 platform support.'
+      }
+    ]
+  }
+};
 
 export default function AgencyModel() {
+  const [activeTab, setActiveTab] = useState<'partner' | 'bele'>('partner');
+  const activeContent = responsibilities[activeTab];
+
   return (
-    <section id="agency-model" className="relative py-24 bg-[#050f1f] overflow-hidden">
-      <div className="absolute inset-0 dot-grid opacity-25" />
+    <section id="agency-model" className="relative py-24 bg-[#020b18] overflow-hidden">
+      <div className="absolute inset-0 dot-grid opacity-30" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[1px] bg-gradient-to-r from-transparent via-[rgba(0,229,255,0.2)] to-transparent" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <span className="inline-flex items-center border border-[rgba(0,229,255,0.25)] text-[#00e5ff] text-[11px] font-semibold tracking-widest uppercase px-4 py-1.5 rounded-full bg-[rgba(0,229,255,0.05)] mb-5">
-            Agency Model
+            PARTNERSHIP BLUEPRINT
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
-            How Partners{' '}
-            <span className="text-[#00e5ff]">Earn & Scale</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-white leading-tight mb-6">
+            How the Agency Model Works
           </h2>
-          <p className="mt-4 text-[15px] text-[rgba(255,255,255,0.55)] max-w-2xl mx-auto">
-            A transparent revenue-share model built to reward growth. The more clients you bring, the higher your revenue share — with full back-end support at every tier.
+          <p className="text-[16px] text-[rgba(255,255,255,0.6)] max-w-3xl mx-auto leading-relaxed">
+            We work closely as a team to ensure the end-to-end journey for clients is seamless. You manage the client relationship; we handle the complex engineering.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-          {/* Left: benefits */}
-          <div className="flex flex-col gap-6">
-            <h3 className="text-xl font-bold text-white">What You Get as a Partner</h3>
-            <ul className="flex flex-col gap-3">
-              {partnerBenefits.map((b) => (
-                <li key={b} className="flex items-start gap-3">
-                  <CheckCircle2 className="w-4 h-4 text-[#00e5ff] flex-shrink-0 mt-0.5" />
-                  <span className="text-[13px] text-[rgba(255,255,255,0.65)] leading-relaxed">{b}</span>
-                </li>
-              ))}
-            </ul>
-            <a
-              href="#partner"
-              className="self-start flex items-center gap-2 bg-[#00e5ff] hover:bg-[#00ccdd] text-[#020b18] text-[13px] font-bold px-6 py-3 rounded-md transition-all duration-200 cyan-glow mt-2"
+        {/* Toggle Switch */}
+        <div className="flex justify-center mb-16">
+          <div className="inline-flex bg-[#041124] border border-[rgba(255,255,255,0.08)] rounded-full p-1 relative z-10 shadow-lg">
+            <button
+              onClick={() => setActiveTab('partner')}
+              className={`px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-300 ${activeTab === 'partner'
+                ? 'bg-[#00e5ff] text-[#020b18] shadow-[0_0_15px_rgba(0,229,255,0.4)]'
+                : 'text-[rgba(255,255,255,0.5)] hover:text-white'
+                }`}
             >
-              Apply Now
-              <ArrowRight className="w-4 h-4" />
-            </a>
+              Your Responsibilities (Partner)
+            </button>
+            <button
+              onClick={() => setActiveTab('bele')}
+              className={`px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-300 ${activeTab === 'bele'
+                ? 'bg-[#00e5ff] text-[#020b18] shadow-[0_0_15px_rgba(0,229,255,0.4)]'
+                : 'text-[rgba(255,255,255,0.5)] hover:text-white'
+                }`}
+            >
+              Bele AI's Responsibilities
+            </button>
+          </div>
+        </div>
+
+        {/* Content Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          {/* Left Side - Text Content */}
+          <div className="flex flex-col gap-8">
+            <div>
+              <h3 className="text-2xl font-bold text-white mb-4">
+                {activeContent.title}
+              </h3>
+              <p className="text-[15px] text-[rgba(255,255,255,0.6)] leading-relaxed">
+                {activeContent.desc}
+              </p>
+            </div>
+            <div className="flex flex-col gap-6">
+              {activeContent.items.map((item, idx) => (
+                <div key={idx} className="flex items-start gap-4">
+                  <CheckCircle2 className="w-5 h-5 text-[#00e5ff] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-white text-[15px] mr-2">{item.title}</span>
+                    <span className="text-[14px] text-[rgba(255,255,255,0.55)] leading-relaxed">{item.desc}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Right: tier table */}
-          <div className="flex flex-col gap-3">
-            {tiers.map((t) => (
-              <div
-                key={t.name}
-                className={`relative rounded-xl p-5 flex items-center gap-5 module-card ${
-                  t.highlight
-                    ? 'bg-[rgba(0,229,255,0.08)] border border-[rgba(0,229,255,0.35)]'
-                    : 'gradient-border'
-                }`}
-              >
-                {t.highlight && (
-                  <div className="absolute -top-2.5 left-6">
-                    <span className="text-[9px] font-bold tracking-widest uppercase text-[#020b18] bg-[#00e5ff] px-3 py-0.5 rounded-full">
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-                {/* Rev share */}
-                <div className="flex-shrink-0 w-16 h-16 rounded-xl flex flex-col items-center justify-center bg-[rgba(0,229,255,0.08)] border border-[rgba(0,229,255,0.2)]">
-                  <span className="text-2xl font-extrabold text-[#00e5ff] leading-none">{t.rev}</span>
-                  <span className="text-[9px] text-[rgba(255,255,255,0.4)] mt-0.5">Rev Share</span>
-                </div>
-                {/* Details */}
-                <div className="flex-1 min-w-0">
-                  <div className="text-[15px] font-bold text-white mb-1">{t.name}</div>
-                  <div className="text-[11px] text-[rgba(255,255,255,0.45)] mb-0.5">{t.clients}</div>
-                  <div className="text-[11px] text-[rgba(255,255,255,0.45)]">{t.support}</div>
-                </div>
-                {/* Req */}
-                <div className="hidden sm:block text-right flex-shrink-0">
-                  <div className="text-[10px] text-[rgba(255,255,255,0.3)] uppercase tracking-wider mb-1">Requirement</div>
-                  <div className="text-[11px] text-[rgba(255,255,255,0.55)]">{t.req}</div>
-                </div>
-              </div>
-            ))}
+          {/* Right Side - Image */}
+          <div className="relative flex justify-center">
+            <div className="relative w-full max-w-[600px] rounded-2xl overflow-hidden border border-[rgba(255,255,255,0.08)] bg-[#041124] shadow-2xl p-2">
+              <div className="absolute inset-0 bg-gradient-to-tr from-[rgba(0,229,255,0.03)] to-transparent pointer-events-none rounded-2xl" />
+              <Image
+                src="/images/hero.png"
+                alt="Partnership Blueprint"
+                width={800}
+                height={600}
+                className="w-full h-auto object-contain rounded-xl relative z-10"
+              />
+            </div>
           </div>
         </div>
       </div>

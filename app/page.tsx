@@ -7,6 +7,7 @@ import AgencyModel from '@/components/AgencyModel';
 import Roadmap from '@/components/Roadmap';
 import EarningsCalculator from '@/components/EarningsCalculator';
 import PartnerCTA from '@/components/PartnerCTA';
+import FinalCTA from '@/components/FinalCTA';
 import Footer from '@/components/Footer';
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
       <Roadmap />
       <EarningsCalculator />
       <PartnerCTA />
+      <FinalCTA />
       <Footer />
     </main>
   );
